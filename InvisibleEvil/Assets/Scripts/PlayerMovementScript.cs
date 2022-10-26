@@ -7,11 +7,19 @@ public class PlayerMovementScript : MonoBehaviour
     [SerializeField] private float hp = 100;
     [SerializeField] private float speed = 1200;
     [SerializeField] private float jumpForce = 10;
+    [SerializeField] private float groundDistance = 4.1f;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
+
+    private float CandyCount;
+    private bool touchingFloor;
 
     void Update()
     {
-        if (Input.GetButtonDown("Jump"))
+        touchingFloor = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (Input.GetButtonDown("Jump") && touchingFloor) 
         {
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
@@ -34,6 +42,10 @@ public class PlayerMovementScript : MonoBehaviour
         if (other.tag == "Enemy")
         {
             ModifyHp(-other.GetComponent<Enemy>().GetDamage());
+        }
+        if (other.tag == "Candy")
+        {
+            CandyCount += 1;
         }
     }
 
