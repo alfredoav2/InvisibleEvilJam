@@ -4,16 +4,11 @@ using UnityEngine;
 
 public class PlayerMovementScript : MonoBehaviour
 {
-    [SerializeField] float speed = 1200;
-    [SerializeField] float jumpForce = 10;
-    [SerializeField] Rigidbody rb;
+    [SerializeField] private float hp = 100;
+    [SerializeField] private float speed = 1200;
+    [SerializeField] private float jumpForce = 10;
+    [SerializeField] private Rigidbody rb;
 
-    void Start()
-    {
-        
-    }
-
-    
     void Update()
     {
         if (Input.GetButtonDown("Jump"))
@@ -23,5 +18,27 @@ public class PlayerMovementScript : MonoBehaviour
 
         float x = Input.GetAxis("Horizontal");
         rb.velocity = new Vector3(x * speed, rb.velocity.y, 0);
+
+        if (x < 0)
+        {
+            transform.rotation = new Quaternion(0, 180, 0, 0);
+        }
+        else if(x>0)
+        {
+            transform.rotation = new Quaternion(0, 0, 0, 0);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Enemy")
+        {
+            ModifyHp(-other.GetComponent<Enemy>().GetDamage());
+        }
+    }
+
+    private void ModifyHp(float value)
+    {
+        hp += value;
     }
 }
